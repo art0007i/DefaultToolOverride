@@ -1,0 +1,25 @@
+{
+  "version": "1.0.0",
+  "values": {
+    "tool2_type": "ClassName",
+    "tool2_string": "FrooxEngine.DevTool",
+    "tool3_type": "ClassName",
+    "tool3_string": "FrooxEngine.ProtoFlux.ProtoFluxTool",
+    "tool4_type": "ClassName",
+    "tool4_string": "FrooxEngine.MaterialTool",
+    "tool5_type": "ClassName",
+    "tool5_string": "FrooxEngine.ShapeTool",
+    "tool6_type": "ClassName",
+    "tool6_string": "FrooxEngine.LightTool",
+    "tool7_type": "ClassName",
+    "tool7_string": "FrooxEngine.GrabbableSetterTool",
+    "tool8_type": "ClassName",
+    "tool8_string": "FrooxEngine.CharacterColliderSetterTool",
+    "tool9_type": "ClassName",
+    "tool9_string": "FrooxEngine.MicrophoneTool",
+    "tool0_type": "ClassName",
+    "tool0_string": "FrooxEngine.GlueTool",
+    "toolminus_type": "ClassName",
+    "toolminus_string": "FrooxEngine.ComponentCloneTool"
+  }
+}
