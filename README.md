@@ -7,7 +7,7 @@ This mod allows rebinding the 0-9 keys (and minus) in five different ways:
 - None: The key will do nothing. Can be useful if you want to create a multitool for desktop mode.
 - Dequip: Dequips and stashes the currently held tool. aka the default action of the `1` key.
 - URL: Spawns a tool from the record / asset URL specified inside the "string" config key.
-- ClassName: Spawns an empty slot with the tool component specified in the "string" config key. This is useful because a lot of the tools will generate a basic visual when attached. Examples can be found in the `DefaultClassNames.json` file which contains all the default tools, but as ClassNames.
+- ClassName: Spawns an empty slot with the tool component specified in the "string" config key. This is useful because a lot of the tools will generate a basic visual when attached. Examples can be found in the [DefaultClassNames.json](./DefaultClassNames.json) file which contains all the default tools, but as ClassNames.
 
 ## Installation
 1. Install [ResoniteModLoader](https://github.com/resonite-modding-group/ResoniteModLoader).
