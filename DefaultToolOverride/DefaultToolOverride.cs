@@ -15,7 +15,7 @@ namespace DefaultToolOverride
     {
         public override string Name => "DefaultToolOverride";
         public override string Author => "art0007i";
-        public override string Version => "1.0.0";
+        public override string Version => "1.0.1";
         public override string Link => "https://github.com/art0007i/DefaultToolOverride/";
 
         public enum OverrideType
@@ -41,7 +41,7 @@ namespace DefaultToolOverride
                     var st = Str;
                     if (_lastType == null || !st.Contains(_lastType.Name))
                     {
-                        _lastType = AccessTools.TypeByName(st);
+                        _lastType = TypeHelper.FindType(st);
                     }
                     return _lastType;
                 }
@@ -104,7 +104,7 @@ namespace DefaultToolOverride
                             return true;
                         case OverrideType.Dequip:
                             instance.StashCurrentToolOrDequip();
-                            break;
+                            return false;
                         case OverrideType.URL:
                             if (Uri.TryCreate(pair.Str, UriKind.Absolute, out var uri))
                             {
@@ -112,26 +112,27 @@ namespace DefaultToolOverride
                                 {
                                     await instance.SpawnAndEquip(uri);
                                 });
+                                return false;
                             }
                             else
                             {
                                 Warn($"Invalid tool url '{pair.Str}' on tool {toolNum}.");
+                                return true;
                             }
-                            break;
                         case OverrideType.ClassName:
                             var toolType = pair.ToolType;
                             if (toolType != null && typeof(ITool).IsAssignableFrom(toolType))
                             {
                                 // froox uses Uri as dictionary keys. why? I don't know, but you can shove any random url in and it will take it without issue.
                                 SpawnEquipFunc(instance, new Uri("tool://tool" + toolNum), toolType);
+                                return false;
                             }
                             else
                             {
                                 Warn($"Invalid tool TypeName '{pair.Str}' on tool {toolNum}.");
+                                return true;
                             }
-                            break;
                     }
-                    return false;
                 }
                 return true;
             }
