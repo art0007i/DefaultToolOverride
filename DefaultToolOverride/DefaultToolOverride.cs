@@ -102,6 +102,8 @@ namespace DefaultToolOverride
                     {
                         case OverrideType.Fallback:
                             return true;
+                        case OverrideType.None:
+                            return false;
                         case OverrideType.Dequip:
                             instance.StashCurrentToolOrDequip();
                             return false;
