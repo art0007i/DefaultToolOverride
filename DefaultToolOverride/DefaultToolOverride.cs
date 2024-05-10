@@ -15,7 +15,7 @@ namespace DefaultToolOverride
     {
         public override string Name => "DefaultToolOverride";
         public override string Author => "art0007i";
-        public override string Version => "1.0.2";
+        public override string Version => "1.0.3";
         public override string Link => "https://github.com/art0007i/DefaultToolOverride/";
 
         public enum OverrideType
@@ -25,6 +25,15 @@ namespace DefaultToolOverride
             Dequip, // Dequip and stash the current tool. same as pressing 1 by default
             URL, // Spawn a custom tool from a url
             ClassName // Spawn a tool by attaching the provided tool component to an empty slot
+        }
+        
+        // Should I just use the FrooxEngine.Key enum?
+        public enum ModifierKey
+        {
+            None,
+            Shift,
+            Alt,
+            Control
         }
 
         public struct ToolReplacement
@@ -59,6 +68,8 @@ namespace DefaultToolOverride
         }
 
         public static Dictionary<int, ToolReplacement> ConfigKeys = new();
+        
+        public static ModConfigurationKey<ModifierKey> KEY_MODIFIER = new("modifier_key", "Tool spawning will require holding this modifier key.", () => ModifierKey.None);
 
         public static ModConfiguration config;
 
@@ -75,6 +86,8 @@ namespace DefaultToolOverride
         public override void DefineConfiguration(ModConfigurationDefinitionBuilder builder)
         {
             base.DefineConfiguration(builder);
+            builder.Key(KEY_MODIFIER);
+            
             for (int i = 1; i < 10; i++)
             {
                 BuildToolKey(builder, i.ToString(), i);
@@ -96,6 +109,21 @@ namespace DefaultToolOverride
         {
             public static bool ToolIntercept(int toolNum, InteractionHandler instance)
             {
+                switch (config.GetValue(KEY_MODIFIER))
+                {
+                    case ModifierKey.None:
+                        break;
+                    case ModifierKey.Shift:
+                        if (!instance.InputInterface.GetAnyKey(Key.Shift, Key.LeftShift, Key.RightShift)) return false;
+                        break;
+                    case ModifierKey.Alt:
+                        if (!instance.InputInterface.GetAnyKey(Key.Alt, Key.LeftAlt, Key.RightAlt)) return false;
+                        break;
+                    case ModifierKey.Control:
+                        if (!instance.InputInterface.GetAnyKey(Key.Control, Key.LeftControl, Key.RightControl)) return false;
+                        break;
+                }
+
                 if (ConfigKeys.TryGetValue(toolNum, out var pair))
                 {
                     switch (pair.Type)
