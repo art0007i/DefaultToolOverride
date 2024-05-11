@@ -15,7 +15,7 @@ namespace DefaultToolOverride
     {
         public override string Name => "DefaultToolOverride";
         public override string Author => "art0007i";
-        public override string Version => "1.0.3";
+        public override string Version => "1.0.4";
         public override string Link => "https://github.com/art0007i/DefaultToolOverride/";
 
         public enum OverrideType
@@ -33,7 +33,8 @@ namespace DefaultToolOverride
             None,
             Shift,
             Alt,
-            Control
+            Control,
+            Any
         }
 
         public struct ToolReplacement
@@ -68,7 +69,8 @@ namespace DefaultToolOverride
         }
 
         public static Dictionary<int, ToolReplacement> ConfigKeys = new();
-        
+
+        public static ModConfigurationKey<bool> KEY_INVERT_MODIFIER = new("invert_modifier_key", "Reverses the behavior of modifier key. (If you hold the modifier tools will not be spawned)", () => false);
         public static ModConfigurationKey<ModifierKey> KEY_MODIFIER = new("modifier_key", "Tool spawning will require holding this modifier key.", () => ModifierKey.None);
 
         public static ModConfiguration config;
@@ -86,6 +88,7 @@ namespace DefaultToolOverride
         public override void DefineConfiguration(ModConfigurationDefinitionBuilder builder)
         {
             base.DefineConfiguration(builder);
+            builder.Key(KEY_INVERT_MODIFIER);
             builder.Key(KEY_MODIFIER);
             
             for (int i = 1; i < 10; i++)
@@ -109,20 +112,29 @@ namespace DefaultToolOverride
         {
             public static bool ToolIntercept(int toolNum, InteractionHandler instance)
             {
+                var shouldSpawn = true;
+                var shiftHeld = instance.InputInterface.GetAnyKey(Key.Shift, Key.LeftShift, Key.RightShift);
+                var altHeld = instance.InputInterface.GetAnyKey(Key.Alt, Key.LeftAlt, Key.RightAlt);
+                var ctrlHeld = instance.InputInterface.GetAnyKey(Key.Control, Key.LeftControl, Key.RightControl);
                 switch (config.GetValue(KEY_MODIFIER))
                 {
                     case ModifierKey.None:
                         break;
                     case ModifierKey.Shift:
-                        if (!instance.InputInterface.GetAnyKey(Key.Shift, Key.LeftShift, Key.RightShift)) return false;
+                        if (!shiftHeld) shouldSpawn = false;
                         break;
                     case ModifierKey.Alt:
-                        if (!instance.InputInterface.GetAnyKey(Key.Alt, Key.LeftAlt, Key.RightAlt)) return false;
+                        if (!altHeld) shouldSpawn = false;
                         break;
                     case ModifierKey.Control:
-                        if (!instance.InputInterface.GetAnyKey(Key.Control, Key.LeftControl, Key.RightControl)) return false;
+                        if (!ctrlHeld) shouldSpawn = false;
+                        break;
+                    case ModifierKey.Any:
+                        if (!(shiftHeld || altHeld || ctrlHeld)) shouldSpawn = false;
                         break;
                 }
+
+                if(shouldSpawn == config.GetValue(KEY_INVERT_MODIFIER)) return false;
 
                 if (ConfigKeys.TryGetValue(toolNum, out var pair))
                 {
