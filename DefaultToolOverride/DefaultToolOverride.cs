@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using FrooxEngine;
 using System.Reflection.Emit;
 using Elements.Core;
+using Renderite.Shared;
 
 namespace DefaultToolOverride
 {
@@ -15,7 +16,7 @@ namespace DefaultToolOverride
     {
         public override string Name => "DefaultToolOverride";
         public override string Author => "art0007i";
-        public override string Version => "1.0.4";
+        public override string Version => "1.0.5";
         public override string Link => "https://github.com/art0007i/DefaultToolOverride/";
 
         public enum OverrideType
