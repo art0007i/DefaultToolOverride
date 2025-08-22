@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using FrooxEngine;
 using System.Reflection.Emit;
 using Elements.Core;
+using Renderite.Shared;
 
 namespace DefaultToolOverride
 {
@@ -15,7 +16,7 @@ namespace DefaultToolOverride
     {
         public override string Name => "DefaultToolOverride";
         public override string Author => "art0007i";
-        public override string Version => "1.0.4";
+        public override string Version => "1.0.5";
         public override string Link => "https://github.com/art0007i/DefaultToolOverride/";
 
         public enum OverrideType
@@ -193,7 +194,7 @@ namespace DefaultToolOverride
                         yield return new(OpCodes.Ldarg_0); // load object instance so we can access it in our intercept function
                         yield return new(OpCodes.Call, typeof(DefaultToolOverridePatch).GetMethod(nameof(DefaultToolOverridePatch.ToolIntercept)));
                         yield return new(OpCodes.Brfalse, lastLabel); // if our intercept says false skip remaining code
-                        yield return new(OpCodes.Ldloc_S, (byte)12); // put the int back so the real switch statement can use it
+                        yield return new(OpCodes.Ldloc_S, (byte)13); // put the int back so the real switch statement can use it // TODO: figure out a better way to do this, if froox adds another local var it offsets it :(
                     }
                     yield return code;
                 }
