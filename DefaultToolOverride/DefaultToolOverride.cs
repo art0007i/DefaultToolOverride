@@ -16,7 +16,7 @@ namespace DefaultToolOverride
     {
         public override string Name => "DefaultToolOverride";
         public override string Author => "art0007i";
-        public override string Version => "1.0.5";
+        public override string Version => "1.0.6";
         public override string Link => "https://github.com/art0007i/DefaultToolOverride/";
 
         public enum OverrideType
@@ -180,8 +180,12 @@ namespace DefaultToolOverride
                 return true;
             }
 
-            public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> codes)
+            public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> codes, MethodBase method)
             {
+                // Hopefully this doesn't break...
+                var localIndex = method.GetMethodBody().LocalVariables.Last((x) => x.LocalType == typeof(int)).LocalIndex;
+
+                Debug($"Found local at index {localIndex}");
                 Label lastLabel = default;
                 foreach (var code in codes)
                 {
@@ -194,7 +198,7 @@ namespace DefaultToolOverride
                         yield return new(OpCodes.Ldarg_0); // load object instance so we can access it in our intercept function
                         yield return new(OpCodes.Call, typeof(DefaultToolOverridePatch).GetMethod(nameof(DefaultToolOverridePatch.ToolIntercept)));
                         yield return new(OpCodes.Brfalse, lastLabel); // if our intercept says false skip remaining code
-                        yield return new(OpCodes.Ldloc_S, (byte)13); // put the int back so the real switch statement can use it // TODO: figure out a better way to do this, if froox adds another local var it offsets it :(
+                        yield return new(OpCodes.Ldloc_S, (byte) localIndex); // put the int back so the real switch statement can use it
                     }
                     yield return code;
                 }
